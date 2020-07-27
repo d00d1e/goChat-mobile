@@ -8,21 +8,14 @@ export default class Chat extends Component {
     this.state = { name: '' };
   }
 
-  //set Nav title
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: navigation.state.params.name
-    };
-  };
-
   render() {
+    //set state for color/name from ChatButton
     let { name, color } = this.props.route.params;
-    this.props.navigation.setOptions({ name: name });
+    this.props.navigation.setOptions({ title: name });
     this.props.navigation.setOptions({ backgroundColor: color });
 
     return (
       <View style={[styles.container, {backgroundColor: color}]}>
-        <Text>Hello, {name}!</Text>
         <Text>Chat goes here</Text>
       </View>
     );
