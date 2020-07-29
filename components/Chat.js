@@ -20,7 +20,7 @@ export default class Chat extends Component {
       messages: [
         {
           _id: 1,
-          text: this.props.route.params.name + ' has entered the chat!',
+          text: 'Hello there, ' + this.props.route.params.name ,
           createdAt: new Date(),
           user: {
             _id: 2,
@@ -30,7 +30,7 @@ export default class Chat extends Component {
         },
         {
           _id: 2,
-          text: 'This is system message',
+          text: 'This is a system message',
           createdAt: new Date(),
           system: true
         },
