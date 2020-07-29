@@ -63,7 +63,6 @@ export default class Chat extends Component {
 
     return (
       <View style={[styles.container, {backgroundColor: color}]}>
-        <Text> Hello {name}</Text>
         <GiftedChat
           renderBubble={this.renderBubble.bind(this)}
           messages={this.state.messages}

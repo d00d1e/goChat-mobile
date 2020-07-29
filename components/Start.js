@@ -1,6 +1,7 @@
 import React from 'react';               
 import { Button, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
+
 const image = require('../assets/backgroundImage.png');
 
 
@@ -16,6 +17,9 @@ export default class Start extends React.Component {
         <Text style={styles.title}>GoChat</Text>
         <View style={styles.container}>
           <TextInput 
+            accessible={true}
+            accessibilityLabel='Name input'
+            accessibilityRole="Input"
             style={styles.nameInput}
             onChangeText={(name) => this.setState({name})}
             value={this.state.name}
@@ -24,24 +28,44 @@ export default class Start extends React.Component {
           <Text style={styles.chooseColorText}>Choose Background Color:</Text>
           <View style={styles.colorChoices}>
             <TouchableOpacity
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel='Tap me!'
+              accessibilityHint='Selects background color 1'
               style={[styles.color, {backgroundColor: '#090C08'}]}
-              onPress={() => { this.setState({color: '#090C08'}) }} 
+              onPress={() => { this.setState({color: '#090C08'}) }}
             />
             <TouchableOpacity
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel='Tap me!'
+              accessibilityHint='Selects background color 2'
               style={[styles.color, {backgroundColor: '#474056'}]}
               onPress={() => { this.setState({color: '#474056'}) }} 
             />
             <TouchableOpacity
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel='Tap me!'
+              accessibilityHint='Selects background color 3' 
               style={[styles.color, {backgroundColor: '#8A95A5'}]}
               onPress={() => { this.setState({color: '#8A95A5'}) }} 
             />
             <TouchableOpacity
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel='Tap me!'
+              accessibilityHint='Selects background color 4'
               style={[styles.color, {backgroundColor: '#B9C6AE54'}]}
               onPress={() => { this.setState({color: '#B9C6AE54'}) }} 
             />
           </View>
           <View style={styles.chatButton} >
             <Button 
+              accessible={true}
+              accessibilityRole='Button'
+              accessibilityLabel='Enter chatroom button'
+              accessibilityHint=''
               // color='#FFFFFF'
               title='Start Chatting' 
               //sets color/name states for Chat screen
