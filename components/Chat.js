@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, AsyncStorage } from 'react-native';
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import NetInfo from "@react-native-community/netinfo";
+import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat';
 
 // for Android only
 import KeyboardSpacer from 'react-native-keyboard-spacer';
@@ -45,34 +46,45 @@ export default class Chat extends Component {
 
 
   componentDidMount() {    
-    // Firestore anonymous authentication
-    this.authUnsubscribe = firebase.auth().onAuthStateChanged(async(user) => {
-      if (!user) {
-        try { 
-          await firebase.auth().signInAnonymously();
-        } catch (err) {
-          console.log(err);
-        }
+    // check online/offline status
+    NetInfo.fetch().then(isConnected => {
+      if (isConnected) {
+        // ONLINE, fetch messages from Firebase
+        console.log('Online');
+        this.setState({ isConnected: true });
+        // Firebase anonymous authentication
+        this.authUnsubscribe = firebase.auth().onAuthStateChanged(async(user) => {
+          if (!user) {
+            try { 
+              await firebase.auth().signInAnonymously();
+            } catch (err) {
+              console.log(err);
+            }
+          }
+          //update user state with currently active user data
+          this.setState({
+            uid: user.uid,
+            loggedInText: this.props.route.params.name + ' has entered the chat',
+            messages: [],
+            user: {
+              _id: user.uid,
+              name: this.props.route.params.name,    
+              avatar: 'https://placeimg.com/140/140/any',
+            },
+          });
+          // create a reference to the active user's messges
+          this.referenceUser = firebase.firestore().collection('messages').orderBy('createdAt', 'desc');
+          // listen for collection changes for current user
+          this.unsubscribeUser = this.referenceUser.onSnapshot(this.onCollectionUpdate);
+        });
+      } else {
+        // OFFLINE- fetch messages from asyncStorage 
+        console.log('Offline');
+        this.setState({ isConnected: false });
+        this.getMessages();
+        
       }
-      //update user state with currently active user data
-      this.setState({
-        uid: user.uid,
-        loggedInText: this.props.route.params.name + ' has entered the chat',
-        messages: [],
-        user: {
-          _id: user.uid,
-          name: this.props.route.params.name,    
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      });
-      // create a reference to the active user's messges
-      this.referenceUser = firebase.firestore().collection('messages').orderBy('createdAt', 'desc');
-      // listen for collection changes for current user
-      this.unsubscribeUser = this.referenceUser.onSnapshot(this.onCollectionUpdate);
     });
-
-    // get messages from asyncStorage when offline
-    this.getMessages();
   }
 
 
@@ -81,6 +93,22 @@ export default class Chat extends Component {
     this.authUnsubscribe();
     // stop listening for changes
     this.unsubscribeUser();
+  }
+
+
+  // disables input bar when offline
+  renderInputToolbar(props) {
+    if (this.state.isConnected == false) {
+      return (
+        <Text>You are offline</Text>
+      )
+    } else {
+      return (
+        <InputToolbar
+        {...props}
+        />
+      );
+    }
   }
 
 
@@ -185,6 +213,8 @@ export default class Chat extends Component {
       <View style={[styles.container, {backgroundColor: color}]}>
         <Text style={styles.loggedInText}>{this.state.loggedInText}</Text>
         <GiftedChat
+          // renderInputToolbar={false ? () => <Text>You are offline</Text> : this.renderInputToolbar.bind(this)}
+          renderInputToolbar={this.renderInputToolbar.bind(this)}
           renderBubble={this.renderBubble.bind(this)}
           messages={this.state.messages}
           onSend={messages => this.onSend(messages)}
