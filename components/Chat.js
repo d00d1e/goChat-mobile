@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, AsyncStorage } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
 // for Android only
@@ -43,8 +43,9 @@ export default class Chat extends Component {
     this.referenceMessages = firebase.firestore().collection("messages");
   }
 
-  componentDidMount() {
-    // Firestore anonymous auth
+
+  componentDidMount() {    
+    // Firestore anonymous authentication
     this.authUnsubscribe = firebase.auth().onAuthStateChanged(async(user) => {
       if (!user) {
         try { 
@@ -60,17 +61,18 @@ export default class Chat extends Component {
         messages: [],
         user: {
           _id: user.uid,
-          // name: this.props.navigation.state.params.name,     <=========== REVIEW
+          name: this.props.route.params.name,    
           avatar: 'https://placeimg.com/140/140/any',
         },
       });
       // create a reference to the active user's messges
-      this.referenceUser = firebase.firestore().collection('messages').where("uid", "==", this.state.uid);
-      // this.referenceUser = firebase.firestore().collection('messages').orderBy('createdAt', 'desc');     <=========== REVIEW
-
+      this.referenceUser = firebase.firestore().collection('messages').orderBy('createdAt', 'desc');
       // listen for collection changes for current user
       this.unsubscribeUser = this.referenceUser.onSnapshot(this.onCollectionUpdate);
     });
+
+    // get messages from asyncStorage when offline
+    this.getMessages();
   }
 
 
@@ -105,6 +107,38 @@ export default class Chat extends Component {
   };
 
 
+  // delete stored messages during development
+  async deleteMessages() {
+    try {
+      await AsyncStorage.removeItem('messages');
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  // save messages to asyncStorage
+  async saveMessages() {
+    try {
+      await AsyncStorage.setItem('messages', JSON.stringify(this.state.messages));
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+  
+
+  // retrieves messages from asyncStorage 
+  async getMessages() {
+    let messages = '';
+    try {
+      // reads messages in storage
+      messages = await AsyncStorage.getItem('messages') || []; 
+      this.setState({ messages: JSON.parse(messages) });
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+
   // FirebaseDB: add message to messages collection
   addMessages() {
     const message = this.state.messages[0];
@@ -121,7 +155,10 @@ export default class Chat extends Component {
     this.setState(previousState => ({
       messages: GiftedChat.append(previousState.messages, messages)
     }), () => {
+      // add to database
       this.addMessages();
+      // add to asyncstorage
+      this.saveMessages();
     });
   }
 
@@ -151,9 +188,7 @@ export default class Chat extends Component {
           renderBubble={this.renderBubble.bind(this)}
           messages={this.state.messages}
           onSend={messages => this.onSend(messages)}
-          user={{
-            _id: 1,
-          }}
+          user={this.state.user}
         />
         {/* Keyboard spacer for android  */}
         {/* {Platform.OS === 'android' ? <KeyboardSpacer /> : null } */}
