@@ -57,7 +57,7 @@ export default class CustomActions extends Component {
 	// upload image to Firebase cloud storage (via XMLHttpRequest)
 	uploadImage = async (uri) => {
 		try {
-			// binary large object
+			// 'blob'- binary large object
 			const blob = await new Promise((resolve, reject) => {
 				const xhr = new XMLHttpRequest();
 				xhr.onload = function() {
@@ -177,9 +177,9 @@ const styles = StyleSheet.create({
 		backgroundColor: 'transparent',
 		textAlign: 'center',
 	},
- });
+});
 
 
- CustomActions.contextTypes = {
-	 actionSheet: PropTypes.func,
- };
+CustomActions.contextTypes = {
+	actionSheet: PropTypes.func,
+};
