@@ -1,4 +1,32 @@
-import React, { Component } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Chat.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Chat.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { Component } from 'react';
 import { StyleSheet, Text, View, AsyncStorage, Button, Image } from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
 
@@ -142,7 +170,7 @@ export default class Chat extends Component {
    * delete stored messages (during development)
    * @async
    * @function deleteMessage
-   * @returns {Promise<string>} The data removed from device storage
+   * @returns {Promise&lt;string>} The data removed from device storage
   */
   deleteMessage = async () => {
     try {
@@ -157,7 +185,7 @@ export default class Chat extends Component {
    * save messages to asyncStorage
    * @async
    * @function saveMessage
-   * @returns {Promise<string>} The data saved to device storage
+   * @returns {Promise&lt;string>} The data saved to device storage
   */
   saveMessage = async () => {
     try {
@@ -172,7 +200,7 @@ export default class Chat extends Component {
    * retrieves messages from asyncStorage 
    * @async
    * @function getMessage
-   * @returns {Promise<string>} The data from device storage
+   * @returns {Promise&lt;string>} The data from device storage
   */
   getMessage = async () => {
     let messages = '';
@@ -234,7 +262,7 @@ export default class Chat extends Component {
    * @returns {CustomActions}
   */
   renderCustomActions = (props) => {
-    return <CustomActions {...props} />;
+    return &lt;CustomActions {...props} />;
   }; 
 
 
@@ -249,7 +277,7 @@ export default class Chat extends Component {
 
     if (currentMessage.location) {
       return (
-        <MapView
+        &lt;MapView
           style={{width: 150, height: 100, borderRadius: 13, margin: 3}}
           region={{latitude: currentMessage.location.latitude, longitude: currentMessage.location.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421}}
         />
@@ -269,7 +297,7 @@ export default class Chat extends Component {
     if (this.state.isConnected == false) {
     } else {
       return (
-        <InputToolbar {...props} />
+        &lt;InputToolbar {...props} />
       );
     }
   }
@@ -283,7 +311,7 @@ export default class Chat extends Component {
   */
   renderBubble = (props) => {
     return (
-      <Bubble
+      &lt;Bubble
         {...props}
         wrapperStyle={{
           right: { backgroundColor: '#A3E4D7' },
@@ -300,12 +328,12 @@ export default class Chat extends Component {
     this.props.navigation.setOptions({ title: name });
 
     return (
-      <View style={[styles.container, {backgroundColor: color}]}>
-        <Text style={styles.loggedInText}>{this.state.loggedInText}</Text>
-        {this.state.image && 
-          <Image source={{uri: this.state.image.uri}} style={{width: 200, height: 200}} />
+      &lt;View style={[styles.container, {backgroundColor: color}]}>
+        &lt;Text style={styles.loggedInText}>{this.state.loggedInText}&lt;/Text>
+        {this.state.image &amp;&amp; 
+          &lt;Image source={{uri: this.state.image.uri}} style={{width: 200, height: 200}} />
         }
-        <GiftedChat
+        &lt;GiftedChat
           renderCustomView={this.renderCustomView.bind(this)}
           renderActions={this.renderCustomActions.bind(this)}
           renderInputToolbar={this.renderInputToolbar.bind(this)}
@@ -316,8 +344,8 @@ export default class Chat extends Component {
         />
 
         {/* Keyboard spacer for android  */}
-        {/* {Platform.OS === 'android' ? <KeyboardSpacer /> : null } */}
-      </View>
+        {/* {Platform.OS === 'android' ? &lt;KeyboardSpacer /> : null } */}
+      &lt;/View>
     );
   };
 }
@@ -333,4 +361,26 @@ const styles = StyleSheet.create({
     marginTop: 20,
     color: '#fff'
   }
-})
+})</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addMessage">addMessage</a></li><li><a href="global.html#deleteMessage">deleteMessage</a></li><li><a href="global.html#getLocation">getLocation</a></li><li><a href="global.html#getMessage">getMessage</a></li><li><a href="global.html#onActionPress">onActionPress</a></li><li><a href="global.html#onCollectionUpdate">onCollectionUpdate</a></li><li><a href="global.html#onSend">onSend</a></li><li><a href="global.html#pickImage">pickImage</a></li><li><a href="global.html#renderBubble">renderBubble</a></li><li><a href="global.html#renderCustomActions">renderCustomActions</a></li><li><a href="global.html#renderCustomView">renderCustomView</a></li><li><a href="global.html#renderInputToolbar">renderInputToolbar</a></li><li><a href="global.html#saveMessage">saveMessage</a></li><li><a href="global.html#takePhoto">takePhoto</a></li><li><a href="global.html#uploadImage">uploadImage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Sat Aug 15 2020 20:24:04 GMT-0700 (Pacific Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
