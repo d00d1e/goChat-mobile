@@ -20,6 +20,12 @@ Expo CLI
 
 Download [Expo Client](https://expo.io/tools) on your device 
 
+[Expo SDK](https://docs.expo.io/versions/latest/): ImagePicker API, Permissions API, Location API
+* `expo install expo-permissions`
+* `expo install expo-image-picker`
+* `expo install expo-location`
+* `expo install react-native-maps`
+
 ### iOS simulator
 XCode - available to download from the [App](https://apps.apple.com/us/app/xcode/id497799835?mt=12) store 
 * `npm run ios`
