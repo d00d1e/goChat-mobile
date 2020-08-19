@@ -1,6 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 // Expo Permissions API, ImagePicker API, Location API
 import * as Permissions from 'expo-permissions';
@@ -9,54 +14,44 @@ import * as Location from 'expo-location';
 
 import firebase from 'firebase';
 
-
 export default class CustomActions extends Component {
-  constructor() {
-    super();
-  }
-
-
-/**
- * access device's photo library
- * @async
- * @function pickImage
- * @returns {Promise<string>} Image uri
- * 
-*/
+  /**
+   * access device's photo library
+   * @async
+   * @function pickImage
+   * @returns {Promise<string>} Image uri
+  */
   pickImage = async () => {
-    const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     try {
-      let result = await ImagePicker.launchImageLibraryAsync({
+      const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: 'Images',
-      }).catch(error => console.log(error));
-	
-      if (!result.cancelled){
+      }).catch((error) => console.log(error));
+      if (!result.cancelled) {
         const imageUrl = await this.uploadImage(result.uri);
-        this.props.onSend({ image: imageUrl })
+        this.props.onSend({ image: imageUrl });
       }
     } catch (err) {
       console.log(err);
     }
   }
 
-	
   /**
    * access device's camera to take photo
    * @async
    * @function takePhoto
    * @returns {Promise<string>} Image uri
-  */ 
+  */
   takePhoto = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL, Permissions.CAMERA);
     try {
-      if (status === 'granted'){
-        let result = await ImagePicker.launchCameraAsync({
+      if (status === 'granted') {
+        const result = await ImagePicker.launchCameraAsync({
           mediaTypes: 'Images',
-        }).catch(error => console.log(error));
-				
-        if (!result.cancelled){
+        }).catch((error) => console.log(error));
+        if (!result.cancelled) {
           const imageUrl = await this.uploadImage(result.uri);
-          this.props.onSend({ image: imageUrl })
+          this.props.onSend({ image: imageUrl });
         }
       }
     } catch (err) {
@@ -64,23 +59,22 @@ export default class CustomActions extends Component {
     }
   }
 
-
   /**
    * upload image to Firebase cloud storage (via XMLHttpRequest)
    * @async
    * @function uploadImage
    * @param {string} uri - image uri
    * @returns {Promise<string>} Image URL
-  */ 
-	uploadImage = async (uri) => {
+  */
+  uploadImage = async (uri) => {
     try {
       // 'blob'- binary large object
       const blob = await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.onload = function() {
+        xhr.onload = () => {
           resolve(xhr.response);
         };
-        xhr.onerror = function(err) {
+        xhr.onerror = (err) => {
           console.log(err);
           reject(new TypeError('Network request failed'));
         };
@@ -89,11 +83,10 @@ export default class CustomActions extends Component {
         xhr.send(null);
       });
       // creates unique file name for each uploaded image
-      let getImageName = uri.split('/');
-      let imageName = getImageName[getImageName.length - 1]
-			
+      const getImageName = uri.split('/');
+      const imageName = getImageName[getImageName.length - 1];
       // reference to storage
-      const ref = firebase.storage().ref().child(`${imageName}`)
+      const ref = firebase.storage().ref().child(`${imageName}`);
       const snapshot = await ref.put(blob);
 
       blob.close();
@@ -103,27 +96,26 @@ export default class CustomActions extends Component {
       console.log(err);
     }
   }
-	
 
   /**
    * access device's location  data
    * @async
    * @function getLocation
    * @returns {Promise<string>} The current geo location
-  */ 
+  */
   getLocation = async () => {
     const { status } = await Permissions.askAsync(Permissions.LOCATION);
-    try { 			
-      if (status === 'granted'){
-        let result = await Location.getCurrentPositionAsync({}).catch(error => console.log(error));
-			
+    try {
+      if (status === 'granted') {
+        const result = await Location.getCurrentPositionAsync({})
+          .catch((error) => console.log(error));
         if (result) {
           this.props.onSend({
-            location:{
+            location: {
               longitude: result.coords.longitude,
               latitude: result.coords.latitude,
-            }
-          })
+            },
+          });
         }
       }
     } catch (err) {
@@ -131,11 +123,10 @@ export default class CustomActions extends Component {
     }
   }
 
-
-  /** 
+  /**
    * define array of strings to be displayed in the actionSheet
    * @function onActionPress
-   * @returns {actionSheet} Option to choose from library, take photo, or get location 
+   * @returns {actionSheet} Option to choose from library, take photo, or get location
   */
   onActionPress = () => {
     const options = ['Choose From Library', 'Take Picture', 'Send Location', 'Cancel'];
@@ -162,16 +153,15 @@ export default class CustomActions extends Component {
       },
     );
   };
-	
 
   render() {
     return (
-      <TouchableOpacity 
-        accessible={true}
-        accessibilityRole='button'
-        accessibilityLabel='Tap me!'
-        accessibilityHint='Send image or location' 
-        style={[styles.container]} 
+      <TouchableOpacity
+        accessible
+        accessibilityRole="button"
+        accessibilityLabel="Tap me!"
+        accessibilityHint="Send image or location"
+        style={[styles.container]}
         onPress={this.onActionPress}
       >
         <View style={[styles.wrapper, this.props.wrapperStyle]}>
@@ -180,8 +170,7 @@ export default class CustomActions extends Component {
       </TouchableOpacity>
     );
   }
-};
-
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -204,7 +193,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
 
 CustomActions.contextTypes = {
   actionSheet: PropTypes.func,
