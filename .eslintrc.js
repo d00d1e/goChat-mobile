@@ -29,6 +29,7 @@ module.exports = {
     'no-underscore-dangle': 'off',
     'react/no-unused-state': 'off',
     'no-unused-vars': 'off',
+    'react/prefer-stateless-function': 'off',
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
     'no-use-before-define': ['error', { variables: false }],
     'no-shadow': ['error', { builtinGlobals: false, hoist: 'functions', allow: [] }],
